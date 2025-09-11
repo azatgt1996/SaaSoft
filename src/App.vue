@@ -1,5 +1,7 @@
 <template>
   <main>
+    <!-- раскомментируй для проверки -->
+    <!-- <pre style="font-size: x-small">{{ accountStore.accounts }}</pre> -->
     <header class="page-header">
       <h2>Учетные записи</h2>
       <el-button @click="addAccount">Добавить</el-button>
@@ -19,14 +21,66 @@
       <el-col :span="6"><el-text type="info">Пароль</el-text></el-col>
       <el-col :span="1"></el-col>
     </el-row>
-    <Account />
+    <div
+      v-for="(account, index) of accountStore.accounts"
+      :key="index"
+    >
+      <AccountItem
+        :data="account"
+        @update="updateAccount(index, $event)"
+        @delete="deleteAccount(index, account.id)"
+      />
+    </div>
+    <el-text
+      class="empty-info"
+      v-if="!accountStore.accounts.length"
+    >
+      Список пуст
+    </el-text>
   </main>
 </template>
 
 <script setup lang="ts">
-import Account from './components/Account.vue'
+import AccountItem from './components/AccountItem.vue'
+import { useAccountStore } from './stores/accountStore'
+import { AccountTypes, type Account } from './types'
+import { showSuccessMessage } from './utils'
 
-function addAccount() {}
+const accountStore = useAccountStore()
+
+function addAccount() {
+  const newAccount: Account = {
+    id: null,
+    labels: [],
+    type: AccountTypes.Local,
+    login: null,
+    password: null,
+  }
+  accountStore.accounts.push(newAccount)
+}
+
+function updateAccount(index: number, data: Account) {
+  if (data.id) {
+    const account = accountStore.accounts.find((item) => item.id === data.id) ?? {}
+    Object.assign(account, data)
+    showSuccessMessage('Запись изменена')
+  } else {
+    data.id = new Date().getTime()
+    accountStore.accounts[index] = data
+    showSuccessMessage('Запись создана')
+  }
+  accountStore.saveStore()
+}
+
+function deleteAccount(index: number, accountId: number | null) {
+  if (accountId) {
+    accountStore.accounts = accountStore.accounts.filter((item) => item.id !== accountId)
+    accountStore.saveStore()
+    showSuccessMessage('Запись удалена')
+  } else {
+    accountStore.accounts.splice(index, 1)
+  }
+}
 </script>
 
 <style scoped>
@@ -40,5 +94,12 @@ main {
 }
 .list-titles {
   margin-top: 14px;
+}
+.empty-info {
+  width: 100%;
+  text-align: center;
+  display: block;
+  font-size: 20px;
+  margin-top: 30px;
 }
 </style>

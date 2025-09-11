@@ -1,29 +1,15 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 import type { Ref } from 'vue'
-
-type Account = {
-  id: number
-  labels: string[]
-  type: string
-  login: string
-  password: string
-}
+import type { Account } from '../types'
 
 export const useAccountStore = defineStore('accountStore', () => {
-  const accounts: Ref<Account[]> = ref([])
+  const accountsFromLS: Account[] = JSON.parse(localStorage.getItem('accounts') ?? '[]')
+  const accounts: Ref<Account[]> = ref(accountsFromLS)
 
-  function addAccount(account: Account) {
-    console.log(account)
+  function saveStore() {
+    localStorage.setItem('accounts', JSON.stringify(accounts.value))
   }
 
-  function updateAccount(account: Account) {
-    console.log(account)
-  }
-
-  function deleteAccount(accountId: number) {
-    console.log(accountId)
-  }
-
-  return { accounts, addAccount, updateAccount, deleteAccount }
+  return { accounts, saveStore }
 })
