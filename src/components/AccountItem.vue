@@ -29,10 +29,12 @@
     </el-col>
     <el-col :span="model.type === AccountTypes.Local ? 6 : 12">
       <el-input
+        ref="loginRef"
         v-model="model.login"
         placeholder="Введите логин"
         maxlength="100"
         @change="updateAccount"
+        @blur="validate(loginRef, model.login)"
       />
     </el-col>
     <el-col
@@ -40,11 +42,13 @@
       :span="6"
     >
       <el-input
+        ref="passwordRef"
         v-model="model.password"
         type="password"
         placeholder="Введите пароль"
         maxlength="100"
         @change="updateAccount"
+        @blur="validate(passwordRef, model.password)"
       />
     </el-col>
     <el-col :span="1">
@@ -52,6 +56,7 @@
         type="danger"
         :icon="Delete"
         circle
+        text
         @click="emit('delete')"
       />
     </el-col>
@@ -74,6 +79,17 @@ const accountTypeOptions = [
   { label: 'Локальная', value: AccountTypes.Local },
   { label: 'LDAP', value: AccountTypes.Ldap },
 ]
+
+const loginRef = ref()
+const passwordRef = ref()
+
+function validate(fieldRef: Ref<any>, val: string | null) {
+  if (!val) {
+    fieldRef.$el.classList.add('invalid')
+  } else {
+    fieldRef.$el.classList.remove('invalid')
+  }
+}
 
 const model: Ref<Account> = ref(clone(props.data))
 
@@ -114,5 +130,11 @@ function updateAccount() {
 <style scoped>
 .account {
   margin: 5px 0;
+}
+</style>
+
+<style>
+.invalid .el-input__wrapper {
+  box-shadow: 0 0 0 1px red inset;
 }
 </style>
