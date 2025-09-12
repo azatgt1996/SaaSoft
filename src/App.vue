@@ -11,29 +11,32 @@
       :closable="false"
       title="Для указания нескольких меток для одной пары логин/пароль используйте разделитель ;"
     />
-    <el-row
-      class="list-titles"
-      :gutter="10"
-    >
+    <el-row class="list-titles">
       <el-col :span="6"><el-text type="info">Метки</el-text></el-col>
       <el-col :span="5"><el-text type="info">Тип записи</el-text></el-col>
       <el-col :span="6"><el-text type="info">Логин</el-text></el-col>
       <el-col :span="6"><el-text type="info">Пароль</el-text></el-col>
       <el-col :span="1"></el-col>
     </el-row>
-    <div
-      v-for="(account, index) of accountStore.accounts"
-      :key="index"
+
+    <el-scrollbar
+      v-if="accountStore.accounts.length"
+      height="calc(100vh - 200px)"
     >
-      <AccountItem
-        :data="account"
-        @update="updateAccount(index, $event)"
-        @delete="deleteAccount(index, account.id)"
-      />
-    </div>
+      <div
+        v-for="(account, index) of accountStore.accounts"
+        :key="index"
+      >
+        <AccountItem
+          :data="account"
+          @update="updateAccount(index, $event)"
+          @delete="deleteAccount(index, account.id)"
+        />
+      </div>
+    </el-scrollbar>
     <el-text
+      v-else
       class="empty-info"
-      v-if="!accountStore.accounts.length"
     >
       Список пуст
     </el-text>
@@ -94,6 +97,10 @@ main {
 }
 .list-titles {
   margin-top: 14px;
+}
+.accounts-list {
+  overflow-y: auto;
+  height: calc(100vh - 200px);
 }
 .empty-info {
   width: 100%;

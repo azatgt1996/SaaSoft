@@ -1,8 +1,5 @@
 <template>
-  <el-row
-    class="account"
-    :gutter="10"
-  >
+  <el-row class="account">
     <el-col :span="6">
       <el-input
         v-model="labels"
@@ -10,6 +7,7 @@
         type="textarea"
         maxlength="50"
         :rows="1"
+        autosize
         @change="updateAccount"
       />
     </el-col>

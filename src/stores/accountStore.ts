@@ -8,7 +8,8 @@ export const useAccountStore = defineStore('accountStore', () => {
   const accounts: Ref<Account[]> = ref(accountsFromLS)
 
   function saveStore() {
-    localStorage.setItem('accounts', JSON.stringify(accounts.value))
+    const data = accounts.value.filter((item) => item.id)
+    localStorage.setItem('accounts', JSON.stringify(data))
   }
 
   return { accounts, saveStore }

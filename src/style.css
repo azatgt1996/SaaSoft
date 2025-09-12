@@ -1,3 +1,7 @@
 * {
   font-family: Arial, Helvetica, sans-serif;
 }
+
+.el-col {
+  padding: 0 5px;
+}
