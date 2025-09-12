@@ -11,7 +11,10 @@
       :closable="false"
       title="Для указания нескольких меток для одной пары логин/пароль используйте разделитель ;"
     />
-    <el-row class="list-titles">
+    <el-row
+      class="list-titles"
+      :gutter="10"
+    >
       <el-col :span="6"><el-text type="info">Метки</el-text></el-col>
       <el-col :span="5"><el-text type="info">Тип записи</el-text></el-col>
       <el-col :span="6"><el-text type="info">Логин</el-text></el-col>

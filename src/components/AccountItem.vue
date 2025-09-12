@@ -1,5 +1,8 @@
 <template>
-  <el-row class="account">
+  <el-row
+    class="account"
+    :gutter="10"
+  >
     <el-col :span="6">
       <el-input
         v-model="labels"
