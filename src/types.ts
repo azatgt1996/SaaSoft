@@ -1,16 +1,18 @@
-export type Label = {
+interface Label {
   text: string
 }
 
-export type Account = {
-  id: number | null
-  labels: Label[]
-  type: string
-  login: string | null
-  password: string | null
+export type AccountType = 'local' | 'ldap'
+
+export type AccountTypeOption = {
+  label: string
+  value: AccountType
 }
 
-export enum AccountTypes {
-  Local = 'local',
-  Ldap = 'ldap',
+export interface Account {
+  id: number | null
+  labels: Label[]
+  type: AccountType
+  login: string | null
+  password: string | null
 }

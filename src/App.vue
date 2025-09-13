@@ -49,7 +49,7 @@
 <script setup lang="ts">
 import AccountItem from './components/AccountItem.vue'
 import { useAccountStore } from './stores/accountStore'
-import { AccountTypes, type Account } from './types'
+import type { Account } from './types'
 import { showSuccessMessage } from './utils'
 
 const accountStore = useAccountStore()
@@ -58,7 +58,7 @@ function addAccount() {
   const newAccount: Account = {
     id: null,
     labels: [],
-    type: AccountTypes.Local,
+    type: 'local',
     login: null,
     password: null,
   }

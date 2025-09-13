@@ -28,7 +28,7 @@
         />
       </el-select>
     </el-col>
-    <el-col :span="model.type === AccountTypes.Local ? 6 : 12">
+    <el-col :span="model.type === 'local' ? 6 : 12">
       <el-input
         ref="loginRef"
         v-model="model.login"
@@ -39,7 +39,7 @@
       />
     </el-col>
     <el-col
-      v-if="model.type === AccountTypes.Local"
+      v-if="model.type === 'local'"
       :span="6"
     >
       <el-input
@@ -67,7 +67,7 @@
 <script setup lang="ts">
 import { Delete } from '@element-plus/icons-vue'
 import { computed, ref, watch, type Ref } from 'vue'
-import { AccountTypes, type Account } from '../types'
+import type { Account, AccountTypeOption } from '../types'
 import { clone } from '../utils'
 
 const props = defineProps<{
@@ -76,9 +76,9 @@ const props = defineProps<{
 
 const emit = defineEmits(['delete', 'update'])
 
-const accountTypeOptions = [
-  { label: 'Локальная', value: AccountTypes.Local },
-  { label: 'LDAP', value: AccountTypes.Ldap },
+const accountTypeOptions: AccountTypeOption[] = [
+  { label: 'Локальная', value: 'local' },
+  { label: 'LDAP', value: 'ldap' },
 ]
 
 const loginRef = ref()
@@ -114,7 +114,7 @@ watch(
 watch(
   () => model.value.type,
   (val) => {
-    if (val === AccountTypes.Ldap) {
+    if (val === 'ldap') {
       model.value.password = null
     }
   }
@@ -122,7 +122,7 @@ watch(
 
 function updateAccount() {
   const { login, password, type } = model.value
-  if (login && ((password && type === AccountTypes.Local) || type == AccountTypes.Ldap)) {
+  if (login && ((type === 'local' && password) || type === 'ldap')) {
     emit('update', clone(model.value))
   }
 }
