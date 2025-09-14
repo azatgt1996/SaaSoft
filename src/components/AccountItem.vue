@@ -66,9 +66,9 @@
 
 <script setup lang="ts">
 import { Delete } from '@element-plus/icons-vue'
-import { computed, ref, watch, type Ref } from 'vue'
+import { computed, nextTick, ref, watch, type Ref } from 'vue'
 import type { Account, AccountTypeOption } from '../types'
-import { clone } from '../utils'
+import { clone, deepEq } from '../utils'
 
 const props = defineProps<{
   data: Account
@@ -84,11 +84,12 @@ const accountTypeOptions: AccountTypeOption[] = [
 const loginRef = ref()
 const passwordRef = ref()
 
-function validate(fieldRef: Ref<any>, val: string | null) {
+function validate(fieldRef: any, val: string | null) {
+  const el = fieldRef.$el as HTMLElement
   if (!val) {
-    fieldRef.$el.classList.add('invalid')
+    el.classList.add('invalid')
   } else {
-    fieldRef.$el.classList.remove('invalid')
+    el.classList.remove('invalid')
   }
 }
 
@@ -120,10 +121,14 @@ watch(
   }
 )
 
-function updateAccount() {
-  const { login, password, type } = model.value
+async function updateAccount() {
+  await nextTick()
+  const { labels, type, login, password } = model.value
   if (login && ((type === 'local' && password) || type === 'ldap')) {
-    emit('update', clone(model.value))
+    model.value.labels = labels.map((it) => ({ text: it.text.trim() })).filter((it) => it.text)
+    if (!deepEq(props.data, model.value)) {
+      emit('update', clone(model.value))
+    }
   }
 }
 </script>

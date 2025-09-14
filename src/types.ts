@@ -2,7 +2,7 @@ interface Label {
   text: string
 }
 
-export type AccountType = 'local' | 'ldap'
+type AccountType = 'local' | 'ldap'
 
 export type AccountTypeOption = {
   label: string
