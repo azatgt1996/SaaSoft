@@ -11,7 +11,7 @@
         maxlength="50"
         :rows="1"
         autosize
-        @change="updateAccount"
+        @blur="updateAccount"
       />
     </el-col>
     <el-col :span="5">
@@ -34,8 +34,7 @@
         v-model="model.login"
         placeholder="Введите логин"
         maxlength="100"
-        @change="updateAccount"
-        @blur="validate(loginRef, model.login)"
+        @blur="updateAccount"
       />
     </el-col>
     <el-col
@@ -48,8 +47,7 @@
         type="password"
         placeholder="Введите пароль"
         maxlength="100"
-        @change="updateAccount"
-        @blur="validate(passwordRef, model.password)"
+        @blur="updateAccount"
       />
     </el-col>
     <el-col :span="1">
@@ -84,15 +82,6 @@ const accountTypeOptions: AccountTypeOption[] = [
 const loginRef = ref()
 const passwordRef = ref()
 
-function validate(fieldRef: any, val: string | null) {
-  const el = fieldRef.$el as HTMLElement
-  if (!val) {
-    el.classList.add('invalid')
-  } else {
-    el.classList.remove('invalid')
-  }
-}
-
 const model: Ref<Account> = ref(clone(props.data))
 
 const labels = computed({
@@ -125,11 +114,15 @@ async function updateAccount() {
   await nextTick()
   const { labels, type, login, password } = model.value
   if (login && ((type === 'local' && password) || type === 'ldap')) {
+    model.value.login = login.trim()
+
     model.value.labels = labels.map((it) => ({ text: it.text.trim() })).filter((it) => it.text)
     if (!deepEq(props.data, model.value)) {
       emit('update', clone(model.value))
     }
   }
+  loginRef.value.$el.classList[login ? 'remove' : 'add']('invalid')
+  passwordRef.value.$el.classList[password ? 'remove' : 'add']('invalid')
 }
 </script>
 
